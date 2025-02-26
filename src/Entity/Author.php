@@ -27,9 +27,6 @@ class Author
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $nationality = null;
 
-    /**
-     * @var Collection<int, Book>
-     */
     #[ORM\ManyToMany(targetEntity: Book::class, inversedBy: 'authors')]
     private Collection $books;
 

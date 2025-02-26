@@ -42,22 +42,16 @@ class Book
     #[ORM\JoinColumn(nullable: false)]
     private ?Editor $editor = null;
 
-    /**
-     * @var Collection<int, Author>
-     */
-    #[ORM\ManyToMany(targetEntity: Author::class, mappedBy: 'books')]
-    private Collection $authors;
-
-    /**
-     * @var Collection<int, Comment>
-     */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'book', orphanRemoval: true)]
     private Collection $comments;
 
+    #[ORM\ManyToMany(targetEntity: Author::class, mappedBy: 'books')]
+    private Collection $authors;
+
     public function __construct()
     {
-        $this->authors = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->authors = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,33 +156,6 @@ class Book
     }
 
     /**
-     * @return Collection<int, Author>
-     */
-    public function getAuthors(): Collection
-    {
-        return $this->authors;
-    }
-
-    public function addAuthor(Author $author): static
-    {
-        if (!$this->authors->contains($author)) {
-            $this->authors->add($author);
-            $author->addBook($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAuthor(Author $author): static
-    {
-        if ($this->authors->removeElement($author)) {
-            $author->removeBook($this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Comment>
      */
     public function getComments(): Collection
@@ -213,6 +180,33 @@ class Book
             if ($comment->getBook() === $this) {
                 $comment->setBook(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Author>
+     */
+    public function getAuthors(): Collection
+    {
+        return $this->authors;
+    }
+
+    public function addAuthor(Author $author): static
+    {
+        if (!$this->authors->contains($author)) {
+            $this->authors->add($author);
+            $author->addBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAuthor(Author $author): static
+    {
+        if ($this->authors->removeElement($author)) {
+            $author->removeBook($this);
         }
 
         return $this;
