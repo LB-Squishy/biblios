@@ -31,11 +31,11 @@ class Author
      * @var Collection<int, Book>
      */
     #[ORM\ManyToMany(targetEntity: Book::class, inversedBy: 'authors')]
-    private Collection $authors;
+    private Collection $books;
 
     public function __construct()
     {
-        $this->authors = new ArrayCollection();
+        $this->books = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -94,23 +94,23 @@ class Author
     /**
      * @return Collection<int, Book>
      */
-    public function getAuthors(): Collection
+    public function getBooks(): Collection
     {
-        return $this->authors;
+        return $this->books;
     }
 
-    public function addAuthor(Book $author): static
+    public function addBook(Book $book): static
     {
-        if (!$this->authors->contains($author)) {
-            $this->authors->add($author);
+        if (!$this->books->contains($book)) {
+            $this->books->add($book);
         }
 
         return $this;
     }
 
-    public function removeAuthor(Book $author): static
+    public function removeBook(Book $book): static
     {
-        $this->authors->removeElement($author);
+        $this->books->removeElement($book);
 
         return $this;
     }

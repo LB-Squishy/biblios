@@ -45,19 +45,19 @@ class Book
     /**
      * @var Collection<int, Author>
      */
-    #[ORM\ManyToMany(targetEntity: Author::class, mappedBy: 'authors')]
+    #[ORM\ManyToMany(targetEntity: Author::class, mappedBy: 'books')]
     private Collection $authors;
 
     /**
      * @var Collection<int, Comment>
      */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'book')]
-    private Collection $book;
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'book', orphanRemoval: true)]
+    private Collection $comments;
 
     public function __construct()
     {
         $this->authors = new ArrayCollection();
-        $this->book = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -173,7 +173,7 @@ class Book
     {
         if (!$this->authors->contains($author)) {
             $this->authors->add($author);
-            $author->addAuthor($this);
+            $author->addBook($this);
         }
 
         return $this;
@@ -182,7 +182,7 @@ class Book
     public function removeAuthor(Author $author): static
     {
         if ($this->authors->removeElement($author)) {
-            $author->removeAuthor($this);
+            $author->removeBook($this);
         }
 
         return $this;
@@ -191,27 +191,27 @@ class Book
     /**
      * @return Collection<int, Comment>
      */
-    public function getBook(): Collection
+    public function getComments(): Collection
     {
-        return $this->book;
+        return $this->comments;
     }
 
-    public function addBook(Comment $book): static
+    public function addComment(Comment $comment): static
     {
-        if (!$this->book->contains($book)) {
-            $this->book->add($book);
-            $book->setBook($this);
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setBook($this);
         }
 
         return $this;
     }
 
-    public function removeBook(Comment $book): static
+    public function removeComment(Comment $comment): static
     {
-        if ($this->book->removeElement($book)) {
+        if ($this->comments->removeElement($comment)) {
             // set the owning side to null (unless already changed)
-            if ($book->getBook() === $this) {
-                $book->setBook(null);
+            if ($comment->getBook() === $this) {
+                $comment->setBook(null);
             }
         }
 
