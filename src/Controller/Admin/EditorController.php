@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Editor;
 use App\Form\EditorType;
+use App\Repository\EditorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class EditorController extends AbstractController
 {
     #[Route('', name: 'app_admin_editor_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(EditorRepository $repository): Response
     {
+        $editor = $repository->findAll();
+
         return $this->render('admin/editor/index.html.twig', [
             'controller_name' => 'EditorController',
+            'editors' => $editor,
         ]);
     }
 
@@ -36,6 +40,14 @@ class EditorController extends AbstractController
 
         return $this->render('admin/editor/new.html.twig', [
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_admin_editor_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function show(?Editor $editor): Response
+    {
+        return $this->render('admin/editor/show.html.twig', [
+            'editor' => $editor,
         ]);
     }
 }

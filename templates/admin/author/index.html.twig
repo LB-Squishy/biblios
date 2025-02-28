@@ -1,15 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AuthorController!{% endblock %}
+{% block title %}Liste d'auteurs{% endblock %}
 
 {% block body %}
 <section class="container px-4">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/benjamin/Dev/OC_Sf7_course_Biblios_Sources/Part2_Chap2/biblios/src/Controller/Admin/AuthorController.php</code></li>
-        <li>Your template at <code>/home/benjamin/Dev/OC_Sf7_course_Biblios_Sources/Part2_Chap2/biblios/templates/admin/author/index.html.twig</code></li>
+    <h1>Liste d'auteurs</h1>
+    <ul class="list-group list-group-flush">
+        {% for author in authors %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="card-title d-flex justify-content-between">
+                        <a href="{{ path('app_admin_author_show', {id: author.id}) }}" class="stretched-link link-dark">
+                            <h4 class="mb-1">{{ author.name }}</h4>
+                        </a>
+                        <small class="text-muted">Identifiant : {{ author.id }}</small>
+                    </div>
+                    <p class="card-text">{{ author.nationality }}</p>
+                </div>
+            </div>
+        {% else %}
+            <li class="list-group-item list-group-item-warning">Aucun auteur trouvé</li>
+        {% endfor %}
     </ul>
 </section>
 {% endblock %}
