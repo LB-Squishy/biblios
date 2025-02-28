@@ -22,6 +22,8 @@
                 <li>Aucun enregistrement en base de données.</li>
             {% endfor %}
         </ul>
-        {{ pagerfanta(books) }}
+        <div class="d-flex justify-content-center">
+            {{ pagerfanta(books) }}
+        </div>
     </section>
 {% endblock %}

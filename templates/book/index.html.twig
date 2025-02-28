@@ -32,7 +32,8 @@
                 <p>Aucun livre actuellement</p>
             {% endfor %}
         </div>
-        {{ pagerfanta(books) }}
+        <div class="d-flex justify-content-center">{{ pagerfanta(books) }}</div>
+        
     </div>
 </section>
 {% endblock %}
