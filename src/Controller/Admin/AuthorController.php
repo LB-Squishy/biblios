@@ -12,12 +12,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\Requirement;
 
 #[Route('/admin/author')]
 class AuthorController extends AbstractController
 {
+    public function __construct(
+        private EntityManagerInterface $manager,
+        private AuthorRepository $repository,
+    ) {}
+
     #[Route('', name: 'app_admin_author_index', methods: ['GET'])]
-    public function index(Request $request, AuthorRepository $repository): Response
+    public function index(Request $request): Response
     {
         $dates = [];
         if ($request->query->has('start')) {
@@ -29,7 +35,7 @@ class AuthorController extends AbstractController
         }
 
         $authors = Pagerfanta::createForCurrentPageWithMaxPerPage(
-            new QueryAdapter($repository->findByDateOfBirth()),
+            new QueryAdapter($this->repository->findByDateOfBirth()),
             $request->query->getInt('page', 1),
             4
         );
@@ -40,16 +46,16 @@ class AuthorController extends AbstractController
     }
 
     #[Route('/new', name: 'app_admin_author_new', methods: ['GET', 'POST'])]
-    #[Route('/{id}/edit', name: 'app_admin_author_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function new(?Author $author, Request $request, EntityManagerInterface $manager): Response
+    #[Route('/{id}/edit', name: 'app_admin_author_edit', requirements: ["id" => Requirement::DIGITS], methods: ['GET', 'POST'])]
+    public function new(?Author $author, Request $request): Response
     {
         $author ??= new Author();
         $form = $this->createForm(AuthorType::class, $author);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $manager->persist($author);
-            $manager->flush();
+            $this->manager->persist($author);
+            $this->manager->flush();
             return $this->redirectToRoute('app_admin_author_show', ['id' => $author->getId()]);
         }
 
