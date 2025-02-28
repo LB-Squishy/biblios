@@ -1,14 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détail d'un editeur{% endblock %}
+{% block title %}Éditeur{% endblock %}
 
 {% block body %}
-    <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    </style>
-    <div class="example-wrapper">
-    <h1>Editeur : </h1>
+<section class="container px-4">
+    <h1>Éditeur : </h1>
+
     {% if editor is not null %}
         <div class="card mb-1 m-auto">
             <div class="card-body">
@@ -19,9 +16,9 @@
             </div>
         </div>
     {% else %}
-        <div>Editeur non trouvé</div>
+        <div>Éditeur non trouvé</div>
     {% endif %}
     <a href="{{ path('app_admin_editor_index') }}" class="btn btn-primary">Retour</a>
-    <a href="{{ path('app_admin_editor_edit', {id: editor.id}) }}" class="btn btn-warning">Editer</a>
-</div>
+    <a href="{{ path('app_admin_editor_edit', {id: editor.id}) }}" class="btn btn-warning">Éditer</a>
+</section>
 {% endblock %}
