@@ -9,12 +9,14 @@ use App\Enum\BookStatus;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class BookType extends AbstractType
@@ -42,6 +44,12 @@ class BookType extends AbstractType
                 'class' => Author::class,
                 'choice_label' => 'id',
                 'multiple' => true,
+                'by_reference' => false,
+            ])
+            ->add('certification', CheckboxType::class, [
+                'mapped' => false,
+                'label' => "Je certifie que les informations saisies sont correctes",
+                'constraints' => [new IsTrue(message: "Vous devez cocher la case pour ajouter un livre")],
             ])
         ;
     }

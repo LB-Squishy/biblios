@@ -6,7 +6,10 @@ use App\Repository\AuthorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
+#[UniqueEntity(['name'])]
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
 class Author
 {
@@ -15,12 +18,16 @@ class Author
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 10)]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Assert\NotBlank()]
     #[ORM\Column]
     private ?\DateTimeImmutable $dateOfBirth = null;
 
+    #[Assert\GreaterThan(propertyPath: 'dateOfBirth')]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $dateOfDeath = null;
 
