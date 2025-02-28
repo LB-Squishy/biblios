@@ -6,6 +6,8 @@ use App\Entity\Author;
 use App\Form\AuthorType;
 use App\Repository\AuthorRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,13 +17,25 @@ use Symfony\Component\Routing\Attribute\Route;
 class AuthorController extends AbstractController
 {
     #[Route('', name: 'app_admin_author_index', methods: ['GET'])]
-    public function index(AuthorRepository $repository): Response
+    public function index(Request $request, AuthorRepository $repository): Response
     {
-        $author = $repository->findAll();
+        $dates = [];
+        if ($request->query->has('start')) {
+            $dates['start'] = $request->query->get('start');
+        }
+
+        if ($request->query->has('end')) {
+            $dates['end'] = $request->query->get('end');
+        }
+
+        $authors = Pagerfanta::createForCurrentPageWithMaxPerPage(
+            new QueryAdapter($repository->findByDateOfBirth()),
+            $request->query->getInt('page', 1),
+            4
+        );
 
         return $this->render('admin/author/index.html.twig', [
-            'controller_name' => 'AuthorController',
-            'authors' => $author,
+            'authors' => $authors,
         ]);
     }
 

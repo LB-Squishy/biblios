@@ -6,6 +6,8 @@ use App\Entity\Editor;
 use App\Form\EditorType;
 use App\Repository\EditorRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,12 +17,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class EditorController extends AbstractController
 {
     #[Route('', name: 'app_admin_editor_index', methods: ['GET'])]
-    public function index(EditorRepository $repository): Response
+    public function index(Request $request, EditorRepository $repository): Response
     {
-        $editor = $repository->findAll();
+        $editor = Pagerfanta::createForCurrentPageWithMaxPerPage(
+            new QueryAdapter($repository->createQueryBuilder('e')),
+            $request->query->getInt('page', 1),
+            4
+        );
 
         return $this->render('admin/editor/index.html.twig', [
-            'controller_name' => 'EditorController',
             'editors' => $editor,
         ]);
     }

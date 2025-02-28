@@ -6,6 +6,8 @@ use App\Entity\Book;
 use App\Form\BookType;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,12 +17,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class BookController extends AbstractController
 {
     #[Route('', name: 'app_admin_book_index', methods: ['GET'])]
-    public function index(BookRepository $repository): Response
+    public function index(Request $request, BookRepository $repository): Response
     {
-        $book = $repository->findAll();
+        $book = Pagerfanta::createForCurrentPageWithMaxPerPage(
+            new QueryAdapter($repository->createQueryBuilder('b')),
+            $request->query->getInt('page', 1),
+            4
+        );
 
         return $this->render('/admin/book/index.html.twig', [
-            'controller_name' => 'BookController',
             'books' => $book
         ]);
     }
