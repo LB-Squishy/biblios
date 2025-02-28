@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajout d'auteur{% endblock %}
+{% set action = app.current_route == 'app_admin_author_new' ? 'Ajout' : 'Modification' %}
+
+{% block title %}{{ action }} d'auteur{% endblock %}
 
 {% block body %}
 <section class="container px-4">
     <div class="w-50 m-auto">
-        <h1>Ajout d'auteur</h1>
+        <h1>{{ action }} d'auteur</h1>
 
         {{ form_start(form) }}
         {{ form_row(form.name, {label: 'Nom'}) }}
